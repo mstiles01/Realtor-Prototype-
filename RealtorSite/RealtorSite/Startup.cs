@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RealtorSite.Models;
 
 namespace RealtorSite
 {
@@ -24,6 +25,14 @@ namespace RealtorSite
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSingleton<UserService>();
+            services.AddCors (o => o.AddPolicy  ("ReactPolicy", builder =>
+            {
+                builder.SetIsOriginAllowed(_ => true)
+                        .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +61,7 @@ namespace RealtorSite
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseCors("ReactPolicy");
         }
     }
 }
